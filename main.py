@@ -56,8 +56,6 @@ class EcologicalChaos(InteractiveScene):
         
         self.frame.reorient(135, 40, 0, IN, 10)
         self.frame.move_to(axes.c2p(0.5, 0.2, 5))
-        
-        self.add(axes)
 
         equations = Tex(
             R"""
@@ -67,12 +65,25 @@ class EcologicalChaos(InteractiveScene):
             \frac{\mathrm{d}z}{\mathrm{d}t} &= \frac{a_2 yz}{1+b_2 y} - d_2 z
             \end{aligned}
             """,
+            t2c={
+                "x": RED,
+                "y": GREEN,
+                "z": BLUE,
+            },
             font_size=28
         )
         equations.fix_in_frame()
-        equations.to_corner(UL)
+        equations.move_to(ORIGIN)
         equations.set_backstroke()
-        self.play(Write(equations))
+        
+        self.play(Write(equations), run_time=2)
+        self.wait(1)
+        
+        self.play(
+            equations.animate.to_corner(UL),
+            *[FadeIn(axes)],
+            run_time=1.5
+        )
 
         epsilon = 1e-3
         evolution_time = 400
@@ -84,7 +95,7 @@ class EcologicalChaos(InteractiveScene):
             for n in range(n_points)
         ]
         
-        colors = color_gradient([BLUE_E, TEAL, GREEN_E], len(states))
+        colors = color_gradient([BLUE, GREEN], len(states))
 
         curves = VGroup()
         for state in states:
@@ -92,9 +103,9 @@ class EcologicalChaos(InteractiveScene):
 
             curve = VMobject()
             curve.set_points_as_corners(axes.c2p(*points.T))
-            curve.set_stroke(WHITE, 1, opacity=0.5)
+            curve.set_stroke(WHITE, 1.5, opacity=0.5)
 
-            curve.set_fill(color=None, opacity=0) 
+            curve.set_fill(color=None, opacity=0)
             
             curves.add(curve)
 
@@ -121,9 +132,10 @@ class EcologicalChaos(InteractiveScene):
         dots.remove_updater(update_dots)
         
         self.play(
-            self.frame.animate.reorient(100, 70, 0, IN, 10).move_to(end_center).set_height(5),
+            self.frame.animate.reorient(100, 70, 0, IN, 10).move_to(end_center).set_height(8),
             *[FadeOut(curve) for curve in curves],
+            *[FadeOut(equations)],
             run_time=4
         )
         
-        self.wait()
+        self.wait(2)
