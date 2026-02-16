@@ -42,7 +42,7 @@ def ode_solution_points(function, state0, time, dt=0.01):
         
     return points
 
-class EcologicalChaos(InteractiveScene):
+class EcologicChaos(InteractiveScene):
     def construct(self):
         axes = ThreeDAxes(
             x_range=(0, 1.2, 0.2),
