@@ -2,6 +2,36 @@ from manim_imports_ext import *
 from scipy.integrate import solve_ivp
 import numpy as np
 
+# start
+text1 = [
+    """我们通常认为，大自然是完美的守序者.""",
+    """如果没有外力干扰，生态系统似乎总能找到某种 “平衡”.\n\n
+    兔子多了，草就少了；狐狸多了，兔子就少了，这一直是经典教科书告诉我们的故事.""",
+    """但是 1991 年，两位生态学家 Hastings 和 Powell 在这个\n
+    看似完美的数学模型中发现了一个隐藏的幽灵.\n\n
+    用 x, y, z 表示植物、食草动物和食肉动物，他们描述了一个简单的食物链，\n
+    并在其中加入了一些限制条件，比如植物按照某种称为 Logistic 映射的方式增长、\n
+    动物和植物的死亡率不随着种群数量的变化而变化等等."""
+]
+class Main(InteractiveScene):
+    def construct(self):
+        script = []
+        for line in text1:
+            t = Text(
+                line,
+                font="LXGW Bright GB",
+                font_size=32
+            )
+            script.append(t)
+            
+        for t in script:
+            self.play(Write(t), run_time=len(t) / 50)
+            self.wait(len(t) / 25)
+            self.play(FadeOut(t), run_time=1)
+
+text2 = [
+    """上面是我们刚才所提到的那个描述食物链的方程."""
+]
 # Hastings-Powell (1991) 3 species food-chain model
 def hastings_powell_system(t, state):
     x, y, z = state
@@ -54,6 +84,19 @@ class EcologicChaos(InteractiveScene):
         )
         axes.shift(2 * DL)
         
+        script = []
+        for line in text2:
+            t = Text(
+                line,
+                font="LXGW Bright GB",
+                font_size=30
+            )
+            script.append(t)
+            
+        for i in range(len(script)):
+            script[i].fix_in_frame()
+            script[i].to_edge(DOWN)
+        
         self.frame.reorient(135, 40, 0, IN, 10)
         self.frame.move_to(axes.c2p(0.5, 0.2, 5))
 
@@ -74,9 +117,13 @@ class EcologicChaos(InteractiveScene):
         )
         equations.fix_in_frame()
         equations.move_to(ORIGIN)
+        self.play(
+            Write(equations),
+            Write(script[0]),
+            run_time=2
+        )
         equations.set_backstroke()
         
-        self.play(Write(equations), run_time=2)
         self.wait(1)
         
         self.play(
